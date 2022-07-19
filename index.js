@@ -26,6 +26,22 @@ const run = async () => {
   }
 };
 
+run().catch(console.dir());
+
+// not route erroe
+app.get((req, res, next) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
+
+// handel server error
+app.get((err, req, res, next) => {
+  res.status(500).json({
+    messgae: "Something broken",
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("How are you?");
 });
