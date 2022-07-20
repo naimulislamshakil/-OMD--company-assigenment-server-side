@@ -28,15 +28,27 @@ const run = async () => {
 
     // singup user
     app.post("/singup", async (req, res) => {
-      const user = req.body;
-      const result = await singupUserCollaction.insertOne(user);
-      res.send({ message: "User insert successfull", result });
+      const { name, email, password, date } = req.body;
+      const userEx = await singupUserCollaction.findOne({ email: email });
+      const user = { name, email, password, date };
+      if (userEx) {
+        return res.send({ message: "User alrady insert." });
+      } else {
+        const result = await singupUserCollaction.insertOne(user);
+        return res.send({ message: "User insert successfull", result });
+      }
     });
 
     // login user
     app.post("/login", async (req, res) => {
       const { email, password } = req.body;
-      const user = await singupUserCollaction.findOne({email: });
+
+      const user = await singupUserCollaction.findOne({ email: email });
+      if (user && user.password === password) {
+        res.send({ message: "User valid", user });
+      } else {
+        res.send({ message: "User not valid" });
+      }
     });
   } finally {
     // await client.close()
