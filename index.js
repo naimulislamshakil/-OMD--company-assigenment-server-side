@@ -21,6 +21,23 @@ const client = new MongoClient(uri, {
 const run = async () => {
   try {
     await client.connect();
+
+    const singupUserCollaction = client
+      .db("company-assigenment")
+      .collection("singupUser");
+
+    // singup user
+    app.post("/singup", async (req, res) => {
+      const user = req.body;
+      const result = await singupUserCollaction.insertOne(user);
+      res.send({ message: "User insert successfull", result });
+    });
+
+    // login user
+    app.post("/login", async (req, res) => {
+      const { email, password } = req.body;
+      const user = await singupUserCollaction.findOne({email: });
+    });
   } finally {
     // await client.close()
   }
